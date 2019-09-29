@@ -1,217 +1,141 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="pdfkit-page_size" content="A4">
-    <meta name="pdfkit-margin_top" content="13mm">
-    <meta name="pdfkit-margin_right" content="13mm">
-    <meta name="pdfkit-margin_bottom" content="13mm">
-    <meta name="pdfkit-margin_left" content="13mm">
-    <title>{{document.number}}</title>
-    <style>
-      body {padding:20px; background:#fff; color:#000; font:normal 100% Helvetica, Arial, sans-serif}
-      h1 {font-size:32px; margin:0 0 20px 0; line-height:1.1; color:{{account.color_scheme}}}
-      h2 {font-size:16px; font-weight:bold; margin:0}
-      h3 {margin:2px 0}
-      p {font-size:12px; margin:0}
-      address {font-style:normal}
-      a:link, a:visited {color:#000; text-decoration:none}
-      a:hover {color:#000; text-decoration:none}
-      abbr {border:none}
-      .label, .currency {font-size:11px; text-transform:uppercase; font-weight:normal}
-      .total-currency {font-size:16px}
-      .smalltxt {font-size:14px}
-      .txt {font-size:16px; font-weight:bold}
-      .w300 {width:300px}
-      .w18per {width:18%}
-      .w20per {width:20%}
-      .w38per {width:38%}
-      .w42per {width:42%}
-      .w47per {width:47%}
-      .w53per {width:53%}
-      .valign-bottom {vertical-align:bottom}
-      .valign-top {vertical-align:top}
-      #items th {font-size:13px}
-      table {width:100%; border:none; border-collapse:collapse}
-      table td {padding:5px 0; font-size:13px; line-height:16px}
-      #items {margin:30px 0 30px 0}
-      #items thead tr th {padding:8px 0 6px 0}
-      #items tbody {border-top:2px solid #000; border-bottom:2px solid #000}
-      #items tbody tr {border-bottom:1px solid #000}
-      #items tfoot .label, #items tfoot .right {border-bottom:1px solid #000}
-      #items tfoot .txt {border-bottom:1px solid {{account.color_scheme}}}
-      #items td {padding:8px 0}
-      #items td.topspace14 {padding-top:14px}
-      .border-first {border-top:4px solid {{account.color_scheme}}; margin-top:0; padding-top:5px}
-      .border-end {border-bottom:2px solid {{account.color_scheme}}}
-      .border2 {border-top:2px solid {{account.color_scheme}}}
-      .border1 {border-top:1px solid #000; margin-top:30px; padding-top:5px}
-      .space30 {padding-right:30px}
-      .space12 {padding-right:12px}
-      .left {text-align:left}
-      .right {text-align:right}
-      .center {text-align:center}
-      .paid {padding:5px 0; border-top:2px solid #000; border-bottom:2px solid #000; font-size:18px; font-weight:bold; text-transform:uppercase}
-      /* css rules for printing */
-      @media print {
-        body {-webkit-print-color-adjust:exact}
-        #items tr {page-break-inside:avoid}
-        #items tfoot {display:table-row-group}
-      }
-    </style>
-  </head>
-  <body>
-    <table>
-      <!-- // Begin Template Header \\ -->
-      <tr>
-        <td colspan="2">
-        {% if account.logo_url != blank %}
-          <img src="{{ account.logo_url }}" class="w300" alt="Logo">
-        {% endif %}
-        </td>
-        <td class="valign-bottom">
-          <h1>{{title}}</h1>
-          {% if document.subject != blank %}
-            <p class="subject">{{ document.subject }}</p>
-          {% endif %}
-        </td>
-      </tr>
-      <!-- // End Template Header \\ -->
-      <!-- // Begin Template Body \\ -->
-      <tr>
-        <td rowspan="2" class="space12 w20per valign-top">
-          <h2 class="label border-first">{{labels.number}}</h2>
-          <p class="txt">{{ document.number }}</p>
-          <h2 class="label border1">{{labels.issue_date}}</h2>
-          <p class="txt">{{document.issue_date | date}}</p>
-          {% if document.po_number != blank %}
-          <h2 class="label border1">{{labels.po_number}}</h2>
-          <p class="txt">{{ document.po_number }}</p>
-          {% endif %}
-          {% if document.due_date != blank %}
-          <h2 class="label border1">{{labels.due_date}}</h2>
-          <p class="txt">{{document.due_date | date}}</p>
-          {% endif %}
-          {% if document.valid_until != blank %}
-          <h2 class="label border1">{{labels.valid_until}}</h2>
-          <p class="txt">{{document.valid_until | date}}</p>
-          {% endif %}
-          {% if document.related_document_type != blank %}
-          <h2 class="label border1">{{labels.related_document}}</h2>
-          <p class="txt"><a href="{{document.related_document_permalink}}">{{document.related_document_type | localize_document_type: labels}} <br> {{document.related_document_number}}</a></p>
-          <p>{{document.related_document_date | date}}</p>
-          {% endif %}
-        </td>
-        <td class="space12 w38per valign-top">
-          <h2 class="label border-first">{{labels.from}}</h2>
-          <h3 class="txt">{{ account.full_name }}</h3>
-          {% if account.tax_id != blank %}<p>{{labels.tax_id}}: {{account.tax_id}}</p>{% endif %}
-          {% if account.vat_number != blank %}<p>{{labels.vat_number}}: {{account.vat_number}}</p>{% endif %}
-          {% if account.company_number != blank %}<p>{{labels.company_number}}: {{account.company_number}}</p>{% endif %}
-          <address>{{ account.formatted_address | newline_to_br }}</address>
-          {% if account.email != blank %}<p><a href="mailto:{{account.email}}">{{ account.email }}</a></p>{% endif %}
-          {% if account.web != blank %}<p><a href="{{account.web}}">{{ account.web }}</a></p>{% endif %}
-        </td>
-        <td class="w42per valign-top">
-          <h2 class="label border-first">{{labels.to}}</h2>
-          <h3 class="txt">{{ document.contact }}</h3>
-          {% if document.tax_id != blank %}<p>{{labels.tax_id}}: {{document.tax_id}}</p>{% endif %}
-          {% if document.vat_number != blank %}<p>{{labels.vat_number}}: {{document.vat_number}}</p>{% endif %}
-          <address>{{ document.billing_address | newline_to_br }}</address>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" class="valign-top">
-        <table id="items">
-          <thead>
-            <tr class="border-first">
-              <th scope="col" class="left">{{labels.description}}</th>
-              <th class="right w18per">{{labels.quantity}}</th>
-              <th class="right w20per">{{labels.unit_price}}</th>
-              <th class="right w20per">{{labels.amount}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in document.items %}
-            <tr>
-              <td>{{item.description}}</td>
-              <td class="right">{{item.quantity | precision}}</td>
-              <td class="right">{{item.unit_price | precision}}</td>
-              <td class="right"><strong>{{item.subtotal | money}}</strong></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="2">&nbsp;</td>
-              <td class="label">{{labels.subtotal}}</td>
-              <td class="right"><strong>{{ document.subtotal | money}}</strong></td>
-            </tr>
-            {% if document.discount > 0 %}
-            <tr>
-              <td colspan="2">&nbsp;</td>
-              <td class="label">{{labels.discount}}</td>
-              <td class="right"><strong>{{ document.discount | money}}</strong></td>
-            </tr>
-            {% endif %}
-            {% for tax in document.taxes %}
-            <tr>
-              <td colspan="2">&nbsp;</td>
-              <td class="label">{{tax.label}}</td>
-              <td class="right">
-                <strong>{{tax.amount | money}}</strong>
-                {% if tax.currency != document.currency %} ({{tax.local_amount | money}}){% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-            <tr>
-              <td colspan="2">&nbsp;</td>
-              <td class="border2 txt">{{labels.total}}</td>
-              <td class="border2 right txt"><strong>{{document.total | money}}</strong></td>
-            </tr>
-            {% if document.state == "paid" %}
-            <!-- paid state -->
-            <tr>
-              <td colspan="3" class="topspace14">&nbsp;</td>
-            </tr>
-            <tr>
-              <td colspan="2">&nbsp;</td>
-              <td><span class="paid">{{paid_stamp}}</span></td>
-            </tr>
-            {% endif %}
-          </tfoot>
-        </table>
-        </td>
-      </tr>
-      <!-- // End Template Body \\ -->
-      <!-- // Begin Template Footer \\ -->
-      <tr>
-        <td>&nbsp;</td>
-        <td colspan="2" class="valign-top">
-          <table>
-            <tr>
-              {% if document.notes != blank %}
-              <td {% if document.payment_details != blank %} class="space12 w47per valign-top" {% endif %}>
-                <h2 class="label border-first">{{labels.notes}}</h2>
-                <p class="smalltxt">{{document.notes | textilize}}</p>
-              </td>
-              {% endif %}
-              {% if document.payment_details != blank %}
-              <td class="w53per valign-top">
-                <h2 class="label border-first">{{labels.payment_details}}</h2>
-                <p class="smalltxt">{{document.payment_details | textilize}}</p>
-              </td>
-              {% elsif document.state == "paid" %}
-              <td class="w53per valign-top">
-                <h2 class="label border-first">{{labels.payment_details}}</h2>
-                <p class="smalltxt">{% assign payment = document.payments | last %}{{ payment.payment_method_text | textilize }}</p>
-              </td>
-              {% endif %}
-            </tr>
-          </table>  
-        </td>
-      </tr>
-      <!-- // End Template Footer \\ -->
-    </table>
-</body>
-</html>
+<p style="float: right; text-align: right; margin: 0;">
+{{ "now" | date: "%m/%d/%y" }}<br />
+Facture {{ order_name }} pour la commande {{ order_name }}
+</p>
+
+<div style="float: left; margin: 0 0 1.5em 0;" >
+<h3 style="margin: 0 0 1em 0;">Stork Marketing</h3>
+</strong><br />
+Siret: 85178924800016<br />
+{{ shop.address }}<br/>
+{{ shop.city }} {{ shop.province_code }} {{ shop.zip | upcase }}<br/>
+{{ shop.country }}
+</div>
+
+<hr />
+
+{% if shipping_address %}
+<h3 style="margin: 0 0 1em 0;">Adresse de facturation</h3>
+
+<div style="margin: 0 0 1em 0; padding: 1em; border: 1px solid black;">
+<strong>{{ shipping_address.name }}</strong><br/>
+{% if shipping_address.company %}
+{{ shipping_address.company }}<br/>
+{% endif %}
+{{ shipping_address.street }}<br/>
+{{ shipping_address.city }}
+{{ shipping_address.province_code }}
+{{ shipping_address.zip | upcase }}<br/>
+{{ shipping_address.country }}
+</div>
+{% endif %}
+
+<h3 style="margin: 0 0 1em 0;">Détails de la facture</h3>
+
+<table class="table-tabular" style="margin: 0 0 1.5em 0;">
+<thead>
+<tr>
+<th>Quantité</th>
+<th>Article</th>
+
+<th>Prix HT</th>
+</tr>
+</thead>
+<tbody>
+{% for line_item in line_items %}
+<tr>
+<td>{{ line_item.quantity }} x</td>
+<td><b>{{ line_item.title }}</b></td>
+<td>
+{% if line_item.original_price != line_item.price %}
+<s>{{ line_item.original_price | money }}</s>
+{% endif %}
+{{ line_item.price | money }}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if transactions.size > 1 %}
+<h3 style="margin: 0 0 1em 0;">Détails de transaction</h3>
+<table class="table-tabular" style="margin: 0 0 1.5em 0;">
+<thead>
+<tr>
+<th>Moyen de paiement</th>
+<th>Montant</th>
+<th>Type</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+{% for transaction in transactions %}
+<tr>
+<td>{{ transaction.gateway | payment_method }}</td>
+<td>{{ transaction.amount | money }}</td>
+<td>{{ transaction.kind }}</td>
+<td>{{ transaction.status }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
+<h3 style="margin: 0 0 1em 0;">Détails du paiement</h3>
+
+<table class="table-tabular" style="margin: 0 0 1.5em 0;">
+<tr>
+<td>Sous-total:</td>
+<td>{{ subtotal_price | money }}</td>
+</tr>
+{% for discount in discounts %}
+<tr>
+<td>Promotions "{{ discount.code }}"</td>
+<td>{{ discount.savings | money }}</td>
+</tr>
+{% endfor %}
+
+{% if shipping_address %}
+<tr>
+<td>Frais de livraison:</td>
+<td>{{ shipping_price | money }}</td>
+</tr>
+{% endif %}
+<tr>
+<td><strong>Prix Total TTC:</strong></td>
+<td><strong>{{ total_price | money }}</strong></td>
+</tr>
+{% if total_paid != total_price %}
+<tr>
+<td><strong>Payée:</strong></td>
+<td><strong>{{ total_paid | money }}</strong></td>
+</tr>
+<tr>
+<td><strong>A payer:</strong></td>
+<td><strong>{{ total_price | minus: total_paid | money }}</strong></td>
+</tr>
+{% endif %}
+</table>
+
+{% if note %}
+<h3 style="margin: 0 0 1em 0;">Note</h3>
+<p>{{ note }}</p>
+{% endif %}
+
+{% if shipping_address %}
+<h3 style="margin: 0 0 1em 0;">Adresse de livraison</h3>
+
+<div style="margin: 0 0 1em 0; padding: 1em; border: 1px solid black;">
+<strong>{{ shipping_address.name }}</strong><br/>
+{% if shipping_address.company %}
+{{ shipping_address.company }}<br/>
+{% endif %}
+{{ shipping_address.street }}<br/>
+{{ shipping_address.city }}
+{{ shipping_address.province_code }}
+{{ shipping_address.zip | upcase }}<br/>
+{{ shipping_address.country }}
+</div>
+{% endif %}
+
+<p>Pour toute question, contactez-nous par mail à <u>{{ shop.email }}</u>, TVA non applicable - article 293 B du CGI</p>
